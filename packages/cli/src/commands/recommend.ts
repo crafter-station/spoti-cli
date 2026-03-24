@@ -6,13 +6,6 @@ interface RecommendOptions {
 	seedArtists?: string;
 	seedGenres?: string;
 	limit: string;
-	energy?: string;
-	danceability?: string;
-	valence?: string;
-	tempo?: string;
-	popularity?: string;
-	acousticness?: string;
-	instrumentalness?: string;
 	json: boolean;
 }
 
@@ -25,34 +18,65 @@ interface SpotifyTrack {
 	popularity: number;
 }
 
+interface SpotifyArtist {
+	id: string;
+	name: string;
+}
+
+interface SearchResult {
+	tracks?: { items: SpotifyTrack[] };
+}
+
 export async function recommendCommand(opts: RecommendOptions) {
-	const params = new URLSearchParams({ limit: opts.limit || "20" });
+	const limit = Number.parseInt(opts.limit || "20");
+	const queries: string[] = [];
 
-	if (opts.seedTracks) params.set("seed_tracks", opts.seedTracks);
-	if (opts.seedArtists) params.set("seed_artists", opts.seedArtists);
-	if (opts.seedGenres) params.set("seed_genres", opts.seedGenres);
+	if (opts.seedGenres) {
+		for (const genre of opts.seedGenres.split(",")) {
+			queries.push(`genre:${genre.trim()}`);
+		}
+	}
 
-	if (!opts.seedTracks && !opts.seedArtists && !opts.seedGenres) {
+	if (opts.seedArtists) {
+		for (const artistId of opts.seedArtists.split(",")) {
+			const artist = await spotify<SpotifyArtist>(
+				`/artists/${artistId.trim()}`,
+			);
+			queries.push(`artist:${artist.name}`);
+		}
+	}
+
+	if (opts.seedTracks) {
+		for (const trackId of opts.seedTracks.split(",")) {
+			const track = await spotify<SpotifyTrack>(
+				`/tracks/${trackId.trim()}`,
+			);
+			queries.push(`artist:${track.artists[0].name}`);
+		}
+	}
+
+	if (queries.length === 0) {
 		console.error(
 			"At least one seed required: --seed-tracks, --seed-artists, or --seed-genres",
 		);
 		process.exit(1);
 	}
 
-	if (opts.energy) params.set("target_energy", opts.energy);
-	if (opts.danceability) params.set("target_danceability", opts.danceability);
-	if (opts.valence) params.set("target_valence", opts.valence);
-	if (opts.tempo) params.set("target_tempo", opts.tempo);
-	if (opts.popularity) params.set("target_popularity", opts.popularity);
-	if (opts.acousticness) params.set("target_acousticness", opts.acousticness);
-	if (opts.instrumentalness)
-		params.set("target_instrumentalness", opts.instrumentalness);
+	const query = queries.join(" ");
+	const params = new URLSearchParams({
+		q: query,
+		type: "track",
+		limit: String(Math.min(limit, 50)),
+	});
 
-	const data = await spotify<{ tracks: SpotifyTrack[] }>(
-		`/recommendations?${params}`,
-	);
+	const data = await spotify<SearchResult>(`/search?${params}`);
 
-	const items = data.tracks.map((t) => ({
+	if (!data.tracks) {
+		console.error("No tracks found");
+		process.exit(1);
+	}
+
+	const items = data.tracks.items.map((t) => ({
 		id: t.id,
 		name: t.name,
 		artist: t.artists.map((a) => a.name).join(", "),
