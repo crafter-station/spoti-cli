@@ -13,7 +13,7 @@ export default function Home() {
 						GitHub
 					</a>
 					<a
-						href="https://www.npmjs.com/package/spoti-cli"
+						href="https://www.npmjs.com/package/@crafter/spoti-cli"
 						className="transition-colors hover:text-white"
 					>
 						npm
@@ -22,7 +22,7 @@ export default function Home() {
 			</nav>
 
 			<div className="mx-auto max-w-3xl">
-				<div className="mb-32 pt-16">
+				<div className="mb-12 pt-16">
 					<h1 className="font-[family-name:var(--font-geist-mono)] text-6xl font-bold leading-[1.05] tracking-tight text-white md:text-8xl">
 						<span className="text-[#1DB954]">Spotify</span> from your terminal
 					</h1>
@@ -30,6 +30,24 @@ export default function Home() {
 						Search tracks, get recommendations, and create playlists. Built for
 						developers and AI agents.
 					</p>
+				</div>
+
+				<div className="mb-24">
+					<h2 className="mb-6 font-[family-name:var(--font-geist-mono)] text-3xl font-bold tracking-tight text-white">
+						Agent Skill
+					</h2>
+					<p className="mb-8 max-w-lg text-neutral-400">
+						Install the skill to let your AI agent create playlists from natural
+						language, mood descriptions, or your Obsidian vault.
+					</p>
+					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
+						<p>
+							<span className="text-neutral-500">$</span>{" "}
+							<span className="text-white">
+								npx skills add crafter-station/skills --skill spoti-cli
+							</span>
+						</p>
+					</div>
 				</div>
 
 				<div className="mb-24 border-t border-neutral-800 pt-24">
@@ -47,7 +65,7 @@ export default function Home() {
 								<span className="text-neutral-500">$</span>{" "}
 								<span className="text-amber-400">bun</span>{" "}
 								<span className="text-white">add -g</span>{" "}
-								<span className="text-[#1DB954]">spoti-cli</span>
+								<span className="text-[#1DB954]">@crafter/spoti-cli</span>
 							</p>
 							<p>
 								<span className="text-neutral-500">$</span>{" "}
@@ -132,24 +150,6 @@ export default function Home() {
 							→ spoti-cli search + recommend + create
 						</p>
 						<p className="text-cyan-300">→ Playlist on your Spotify</p>
-					</div>
-				</div>
-
-				<div className="mb-24 border-t border-neutral-800 pt-24">
-					<h2 className="mb-6 font-[family-name:var(--font-geist-mono)] text-3xl font-bold tracking-tight text-white">
-						Agent Skill
-					</h2>
-					<p className="mb-8 max-w-lg text-neutral-400">
-						Install the skill to let your AI agent create playlists from natural
-						language, mood descriptions, or your Obsidian vault.
-					</p>
-					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
-						<p>
-							<span className="text-neutral-500">$</span>{" "}
-							<span className="text-white">
-								npx skills add crafter-station/skills --skill spoti-cli
-							</span>
-						</p>
 					</div>
 				</div>
 
