@@ -3,6 +3,7 @@ const PORT = 8888;
 export function startAuthServer(): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const server = Bun.serve({
+			hostname: "127.0.0.1",
 			port: PORT,
 			fetch(req) {
 				const url = new URL(req.url);
@@ -59,4 +60,4 @@ function authPage(message: string, isError = false): string {
 </html>`;
 }
 
-export const REDIRECT_URI = `http://localhost:${PORT}/callback`;
+export const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
