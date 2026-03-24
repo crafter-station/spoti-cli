@@ -92,4 +92,7 @@ export async function authCommand(clientId?: string) {
 	});
 
 	console.log("Authenticated successfully!");
+	console.log("");
+	console.log("Install the Claude skill for AI-powered playlists:");
+	console.log("  npx skills add crafter-station/skills --skill spoti-cli");
 }
