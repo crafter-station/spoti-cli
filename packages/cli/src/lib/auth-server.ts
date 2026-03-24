@@ -1,48 +1,61 @@
+import { createServer } from "node:http";
+
 const PORT = 8888;
 
 export function startAuthServer(): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const server = Bun.serve({
-			hostname: "127.0.0.1",
-			port: PORT,
-			fetch(req) {
-				const url = new URL(req.url);
-				if (url.pathname === "/callback") {
-					const code = url.searchParams.get("code");
-					const error = url.searchParams.get("error");
+		const connections = new Set<import("node:net").Socket>();
+		const server = createServer((req, res) => {
+			const url = new URL(req.url ?? "/", `http://127.0.0.1:${PORT}`);
 
-					if (error) {
-						reject(new Error(`Auth failed: ${error}`));
-						setTimeout(() => server.stop(), 100);
-						return new Response(
-							authPage("Authentication failed. You can close this tab.", true),
-							{
-								headers: { "Content-Type": "text/html" },
-							},
-						);
-					}
+			if (url.pathname === "/callback") {
+				const code = url.searchParams.get("code");
+				const error = url.searchParams.get("error");
 
-					if (code) {
-						resolve(code);
-						setTimeout(() => server.stop(), 100);
-						return new Response(
-							authPage("Authentication successful! Return to your terminal."),
-							{
-								headers: { "Content-Type": "text/html" },
-							},
-						);
-					}
-
-					return new Response("Missing code", { status: 400 });
+				if (error) {
+					res.writeHead(200, { "Content-Type": "text/html" });
+					res.end(authPage("Authentication failed. You can close this tab.", true));
+					reject(new Error(`Auth failed: ${error}`));
+					setTimeout(forceClose, 100);
+					return;
 				}
-				return new Response("Not found", { status: 404 });
-			},
+
+				if (code) {
+					res.writeHead(200, { "Content-Type": "text/html" });
+					res.end(authPage("Authentication successful! Return to your terminal."));
+					resolve(code);
+					setTimeout(forceClose, 100);
+					return;
+				}
+
+				res.writeHead(400);
+				res.end("Missing code");
+				return;
+			}
+
+			res.writeHead(404);
+			res.end("Not found");
 		});
 
-		setTimeout(() => {
-			server.stop();
+		server.on("connection", (conn) => {
+			connections.add(conn);
+			conn.on("close", () => connections.delete(conn));
+		});
+
+		const forceClose = () => {
+			clearTimeout(timeout);
+			for (const conn of connections) conn.destroy();
+			server.close();
+			server.unref();
+		};
+
+		server.listen(PORT, "127.0.0.1");
+
+		const timeout = setTimeout(() => {
+			forceClose();
 			reject(new Error("Auth timeout after 120s"));
 		}, 120_000);
+		timeout.unref();
 	});
 }
 
