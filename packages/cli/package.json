@@ -1,6 +1,6 @@
 {
 	"name": "@crafter/spoti-cli",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Spotify Web API from your terminal. Search, recommend, and create playlists.",
 	"type": "module",
 	"main": "dist/index.js",
@@ -22,7 +22,8 @@
 		"@types/bun": "^1.2.0"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"README.md"
 	],
 	"keywords": [
 		"spotify",

@@ -136,8 +136,8 @@ export default function Home() {
 						<code className="border border-neutral-800 bg-neutral-900 px-1.5 py-0.5 font-[family-name:var(--font-geist-mono)] text-sm text-white">
 							--json
 						</code>{" "}
-						output. Pair with Claude, GPT, or any LLM to create playlists from
-						natural language.
+						output. Pair with Codex, Claude Code, or any agent to create
+						playlists from natural language.
 					</p>
 					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
 						<p className="text-neutral-500">
