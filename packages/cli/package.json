@@ -1,5 +1,5 @@
 {
-	"name": "spoti-cli",
+	"name": "@crafter/spoti-cli",
 	"version": "0.1.0",
 	"description": "Spotify Web API from your terminal. Search, recommend, and create playlists.",
 	"type": "module",

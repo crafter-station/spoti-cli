@@ -6,9 +6,9 @@
 	],
 	"scripts": {
 		"dev": "bun run --filter @spoti-cli/web dev",
-		"dev:cli": "bun run --filter spoti-cli dev",
+		"dev:cli": "bun run --filter @crafter/spoti-cli dev",
 		"build": "bun run --filter '*' build",
-		"build:cli": "bun run --filter spoti-cli build",
+		"build:cli": "bun run --filter @crafter/spoti-cli build",
 		"check": "biome check --write ."
 	},
 	"devDependencies": {
