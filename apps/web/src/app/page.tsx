@@ -24,7 +24,7 @@ export default function Home() {
 			<div className="mx-auto max-w-3xl">
 				<div className="mb-32 pt-16">
 					<h1 className="font-[family-name:var(--font-geist-mono)] text-6xl font-bold leading-[1.05] tracking-tight text-white md:text-8xl">
-						Spotify from your terminal
+						<span className="text-[#1DB954]">Spotify</span> from your terminal
 					</h1>
 					<p className="mt-8 max-w-xl font-[family-name:var(--font-geist)] text-lg leading-relaxed text-neutral-400">
 						Search tracks, get recommendations, and create playlists. Built for
@@ -45,37 +45,47 @@ export default function Home() {
 						<div className="space-y-2.5 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
 							<p>
 								<span className="text-neutral-500">$</span>{" "}
-								<span className="text-white">bun add -g spoti-cli</span>
+								<span className="text-amber-400">bun</span>{" "}
+								<span className="text-white">add -g</span>{" "}
+								<span className="text-[#1DB954]">spoti-cli</span>
 							</p>
 							<p>
 								<span className="text-neutral-500">$</span>{" "}
-								<span className="text-white">
-									spoti-cli auth --client-id YOUR_ID
-								</span>
+								<span className="text-[#1DB954]">spoti-cli</span>{" "}
+								<span className="text-violet-400">auth</span>{" "}
+								<span className="text-neutral-500">--client-id</span>{" "}
+								<span className="text-amber-300">YOUR_ID</span>
 							</p>
 							<p className="text-neutral-600">
 								Opening browser for Spotify login...
 							</p>
-							<p className="text-neutral-600">Authenticated successfully!</p>
+							<p className="text-[#1DB954]">Authenticated successfully!</p>
 							<p className="mt-4">
 								<span className="text-neutral-500">$</span>{" "}
-								<span className="text-white">
-									spoti-cli search &quot;Radiohead&quot; --json
-								</span>
+								<span className="text-[#1DB954]">spoti-cli</span>{" "}
+								<span className="text-violet-400">search</span>{" "}
+								<span className="text-amber-300">&quot;Radiohead&quot;</span>{" "}
+								<span className="text-neutral-500">--json</span>
 							</p>
 							<p>
 								<span className="text-neutral-500">$</span>{" "}
-								<span className="text-white">
-									spoti-cli recommend --seed-genres electronic --energy 0.8
-								</span>
+								<span className="text-[#1DB954]">spoti-cli</span>{" "}
+								<span className="text-violet-400">recommend</span>{" "}
+								<span className="text-neutral-500">--seed-genres</span>{" "}
+								<span className="text-amber-300">electronic</span>{" "}
+								<span className="text-neutral-500">--energy</span>{" "}
+								<span className="text-amber-300">0.8</span>
 							</p>
 							<p>
 								<span className="text-neutral-500">$</span>{" "}
-								<span className="text-white">
-									spoti-cli create &quot;Deep Work Mix&quot; --tracks ... --open
-								</span>
+								<span className="text-[#1DB954]">spoti-cli</span>{" "}
+								<span className="text-violet-400">create</span>{" "}
+								<span className="text-amber-300">
+									&quot;Deep Work Mix&quot;
+								</span>{" "}
+								<span className="text-neutral-500">--tracks ... --open</span>
 							</p>
-							<p className="text-neutral-400">
+							<p className="text-[#1DB954]">
 								Playlist created: https://open.spotify.com/playlist/...
 							</p>
 						</div>
@@ -121,7 +131,7 @@ export default function Home() {
 						<p className="text-neutral-600">
 							→ spoti-cli search + recommend + create
 						</p>
-						<p className="text-white">→ Playlist on your Spotify</p>
+						<p className="text-[#1DB954]">→ Playlist on your Spotify</p>
 					</div>
 				</div>
 
