@@ -54,6 +54,7 @@ program
 	.option("-d, --description <text>", "Playlist description")
 	.option("--public", "Make playlist public", false)
 	.option("--tracks <uris>", "Comma-separated track URIs or IDs to add")
+	.option("-o, --open", "Open playlist in Spotify app after creation", false)
 	.option("--json", "Output as JSON", false)
 	.action((name, opts) => createCommand(name, opts));
 

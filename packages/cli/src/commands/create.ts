@@ -5,6 +5,7 @@ interface CreateOptions {
 	description?: string;
 	public: boolean;
 	tracks?: string;
+	open: boolean;
 	json: boolean;
 }
 
@@ -58,5 +59,10 @@ export async function createCommand(name: string, opts: CreateOptions) {
 		output(result, true);
 	} else {
 		console.log(`Playlist created: ${result.url}`);
+	}
+
+	if (opts.open) {
+		const { exec } = await import("node:child_process");
+		exec(`open ${playlist.uri}`);
 	}
 }
