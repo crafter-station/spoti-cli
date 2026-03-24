@@ -1,0 +1,17 @@
+{
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "bun run --filter @spoti-cli/web dev",
+		"dev:cli": "bun run --filter spoti-cli dev",
+		"build": "bun run --filter '*' build",
+		"build:cli": "bun run --filter spoti-cli build",
+		"check": "biome check --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.0"
+	}
+}
