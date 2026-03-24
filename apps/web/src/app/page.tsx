@@ -137,10 +137,10 @@ export default function Home() {
 
 				<div className="mb-24 border-t border-neutral-800 pt-24">
 					<h2 className="mb-6 font-[family-name:var(--font-geist-mono)] text-3xl font-bold tracking-tight text-white">
-						Claude Skill
+						Agent Skill
 					</h2>
 					<p className="mb-8 max-w-lg text-neutral-400">
-						Install the skill to let Claude create playlists from natural
+						Install the skill to let your AI agent create playlists from natural
 						language, mood descriptions, or your Obsidian vault.
 					</p>
 					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
