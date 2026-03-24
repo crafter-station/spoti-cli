@@ -59,7 +59,7 @@ export default function Home() {
 							<p className="text-neutral-600">
 								Opening browser for Spotify login...
 							</p>
-							<p className="text-[#1DB954]">Authenticated successfully!</p>
+							<p className="text-cyan-300">Authenticated successfully!</p>
 							<p className="mt-4">
 								<span className="text-neutral-500">$</span>{" "}
 								<span className="text-[#1DB954]">spoti-cli</span>{" "}
@@ -85,7 +85,7 @@ export default function Home() {
 								</span>{" "}
 								<span className="text-neutral-500">--tracks ... --open</span>
 							</p>
-							<p className="text-[#1DB954]">
+							<p className="text-cyan-300">
 								Playlist created: https://open.spotify.com/playlist/...
 							</p>
 						</div>
@@ -131,7 +131,25 @@ export default function Home() {
 						<p className="text-neutral-600">
 							→ spoti-cli search + recommend + create
 						</p>
-						<p className="text-[#1DB954]">→ Playlist on your Spotify</p>
+						<p className="text-cyan-300">→ Playlist on your Spotify</p>
+					</div>
+				</div>
+
+				<div className="mb-24 border-t border-neutral-800 pt-24">
+					<h2 className="mb-6 font-[family-name:var(--font-geist-mono)] text-3xl font-bold tracking-tight text-white">
+						Claude Skill
+					</h2>
+					<p className="mb-8 max-w-lg text-neutral-400">
+						Install the skill to let Claude create playlists from natural
+						language, mood descriptions, or your Obsidian vault.
+					</p>
+					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
+						<p>
+							<span className="text-neutral-500">$</span>{" "}
+							<span className="text-white">
+								npx skills add crafter-station/skills --skill spoti-cli
+							</span>
+						</p>
 					</div>
 				</div>
 
