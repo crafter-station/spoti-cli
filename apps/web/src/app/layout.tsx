@@ -16,6 +16,13 @@ export const metadata: Metadata = {
 		title: "spoti-cli",
 		description: "Spotify playlists from your terminal",
 		type: "website",
+		images: [{ url: "/og.png", width: 1200, height: 630 }],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "spoti-cli",
+		description: "Spotify playlists from your terminal",
+		images: ["/og-twitter.png"],
 	},
 };
 
