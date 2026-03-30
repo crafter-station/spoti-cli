@@ -1,11 +1,22 @@
 import { REDIRECT_URI, startAuthServer } from "../lib/auth-server.js";
 import { readConfig, updateConfig } from "../lib/config.js";
 
-const SCOPES = [
+const BASE_SCOPES = [
 	"playlist-modify-private",
 	"playlist-modify-public",
 	"user-read-private",
 	"user-read-email",
+];
+
+const FULL_SCOPES = [
+	...BASE_SCOPES,
+	"user-read-playback-state",
+	"user-modify-playback-state",
+	"user-read-currently-playing",
+	"user-top-read",
+	"user-library-read",
+	"user-library-modify",
+	"user-read-recently-played",
 ];
 
 function generateCodeVerifier(): string {
@@ -28,7 +39,7 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
 		.replace(/\//g, "_");
 }
 
-export async function authCommand(clientId?: string) {
+export async function authCommand(clientId?: string, upgrade = false) {
 	const config = readConfig();
 	const id = clientId ?? config.client_id;
 
@@ -46,7 +57,10 @@ export async function authCommand(clientId?: string) {
 	const authUrl = new URL("https://accounts.spotify.com/authorize");
 	authUrl.searchParams.set("response_type", "code");
 	authUrl.searchParams.set("client_id", id);
-	authUrl.searchParams.set("scope", SCOPES.join(" "));
+	const scopes = upgrade
+		? [...new Set([...(config.scopes ?? BASE_SCOPES), ...FULL_SCOPES])]
+		: FULL_SCOPES;
+	authUrl.searchParams.set("scope", scopes.join(" "));
 	authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
 	authUrl.searchParams.set("code_challenge_method", "S256");
 	authUrl.searchParams.set("code_challenge", codeChallenge);
@@ -89,6 +103,7 @@ export async function authCommand(clientId?: string) {
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		expires_at: Date.now() + data.expires_in * 1000,
+		scopes,
 	});
 
 	console.log("Authenticated successfully!");

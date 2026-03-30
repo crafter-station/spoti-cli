@@ -10,6 +10,25 @@ export interface SpotiConfig {
 	access_token?: string;
 	refresh_token?: string;
 	expires_at?: number;
+	scopes?: string[];
+}
+
+const LEGACY_SCOPES = [
+	"playlist-modify-private",
+	"playlist-modify-public",
+	"user-read-private",
+	"user-read-email",
+];
+
+export function requireScopes(needed: string[]) {
+	const config = readConfig();
+	const granted = config.scopes ?? LEGACY_SCOPES;
+	const missing = needed.filter((s) => !granted.includes(s));
+	if (missing.length > 0) {
+		console.error(`This command requires additional permissions: ${missing.join(", ")}`);
+		console.error("Run: spoti-cli auth --upgrade");
+		process.exit(1);
+	}
 }
 
 function ensureConfigDir() {
