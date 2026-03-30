@@ -74,7 +74,14 @@ export async function spotify<T>(
 			},
 		});
 		if (!retry.ok) throw new Error(`Spotify API error: ${retry.status}`);
-		return retry.json() as T;
+		if (retry.status === 204) return {} as T;
+		const retryText = await retry.text();
+		if (!retryText) return {} as T;
+		try {
+			return JSON.parse(retryText) as T;
+		} catch {
+			return {} as T;
+		}
 	}
 
 	if (!res.ok) {
@@ -83,5 +90,11 @@ export async function spotify<T>(
 	}
 
 	if (res.status === 204) return {} as T;
-	return res.json() as T;
+	const text = await res.text();
+	if (!text) return {} as T;
+	try {
+		return JSON.parse(text) as T;
+	} catch {
+		return {} as T;
+	}
 }

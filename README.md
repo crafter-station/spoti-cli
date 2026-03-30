@@ -107,19 +107,15 @@ Fine-tune recommendations with audio features:
 
 ## Real World Use Cases
 
-### DJ Fantasma -- Voice-Controlled Spotify DJ
+### Voice-Controlled DJ
 
-An Obsidian plugin that turns spoti-cli into a voice-controlled DJ. Speak to control Spotify with real-time transcription (ElevenLabs Scribe) and AI-powered intent parsing.
+Build a voice-controlled Spotify DJ with real-time STT and AI intent parsing. spoti-cli handles all Spotify operations while the voice layer handles transcription and responses.
 
 ```
-"Ponme Soda Stereo" -> search -> play (1.5s)
-"Pausa"             -> pause       (0.7s)
-"Mueve a la tele"   -> transfer    (0.5s)
+"Play Soda Stereo"  -> search -> play (1.5s)
+"Pause"             -> pause       (0.7s)
+"Move to TV"        -> transfer    (0.5s)
 ```
-
-Features: animated audio-reactive orb, now playing card, real-time transcript, smart volume ducking, auto-queue.
-
-Stack: Obsidian plugin + Bun/Hono webhook server + ElevenLabs STT/TTS + Claude + spoti-cli
 
 ### AI Playlist Curation
 
