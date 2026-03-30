@@ -24,21 +24,21 @@ export default function Home() {
 			<div className="mx-auto max-w-3xl">
 				<div className="mb-12 pt-16">
 					<h1 className="font-[family-name:var(--font-geist-mono)] text-6xl font-bold leading-[1.05] tracking-tight text-white md:text-8xl">
-						<span className="text-[#1DB954]">Spotify</span> from your terminal
+						<span className="text-[#1DB954]">Full</span> Spotify from your terminal
 					</h1>
 					<p className="mt-8 max-w-xl font-[family-name:var(--font-geist)] text-lg leading-relaxed text-neutral-400">
-						Search tracks, get recommendations, and create playlists. Built for
-						developers and AI agents.
+						Playback control, personalization, library management, and playlists.
+						22 commands. Built for developers and AI agents.
 					</p>
 				</div>
 
 				<div className="mb-24">
 					<h2 className="mb-6 font-[family-name:var(--font-geist-mono)] text-3xl font-bold tracking-tight text-white">
-						Agent Skill
+						AI Agent Skill
 					</h2>
 					<p className="mb-8 max-w-lg text-neutral-400">
-						Install the skill to let your AI agent create playlists from natural
-						language, mood descriptions, or your Obsidian vault.
+						Install the skill to let your AI agent control Spotify from natural
+						language, mood descriptions, or context-aware automation.
 					</p>
 					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
 						<p>
@@ -81,31 +81,25 @@ export default function Home() {
 							<p className="mt-4">
 								<span className="text-neutral-500">$</span>{" "}
 								<span className="text-[#1DB954]">spoti-cli</span>{" "}
-								<span className="text-violet-400">search</span>{" "}
-								<span className="text-amber-300">&quot;Radiohead&quot;</span>{" "}
+								<span className="text-violet-400">player now</span>{" "}
 								<span className="text-neutral-500">--json</span>
 							</p>
-							<p>
+							<p className="text-neutral-600">
+								{`{ "track": "De Musica Ligera", "artist": "Soda Stereo" }`}
+							</p>
+							<p className="mt-2">
 								<span className="text-neutral-500">$</span>{" "}
 								<span className="text-[#1DB954]">spoti-cli</span>{" "}
-								<span className="text-violet-400">recommend</span>{" "}
-								<span className="text-neutral-500">--seed-genres</span>{" "}
-								<span className="text-amber-300">electronic</span>{" "}
-								<span className="text-neutral-500">--energy</span>{" "}
-								<span className="text-amber-300">0.8</span>
+								<span className="text-violet-400">top tracks</span>{" "}
+								<span className="text-neutral-500">--range short_term --json</span>
 							</p>
-							<p>
+							<p className="mt-2">
 								<span className="text-neutral-500">$</span>{" "}
 								<span className="text-[#1DB954]">spoti-cli</span>{" "}
-								<span className="text-violet-400">create</span>{" "}
-								<span className="text-amber-300">
-									&quot;Deep Work Mix&quot;
-								</span>{" "}
-								<span className="text-neutral-500">--tracks ... --open</span>
+								<span className="text-violet-400">player queue</span>{" "}
+								<span className="text-amber-300">spotify:track:ID</span>
 							</p>
-							<p className="text-cyan-300">
-								Playlist created: https://open.spotify.com/playlist/...
-							</p>
+							<p className="text-cyan-300">Added to queue</p>
 						</div>
 					</div>
 				</div>
@@ -113,16 +107,28 @@ export default function Home() {
 				<div className="mb-24 border-t border-neutral-800 pt-24">
 					<div className="grid gap-px border border-neutral-800 bg-neutral-800 md:grid-cols-3">
 						<Feature
+							title="Playback"
+							description="Play, pause, skip, queue, volume, shuffle, repeat. Full remote control."
+						/>
+						<Feature
+							title="Personalization"
+							description="Top tracks, top artists, listening history. Know your taste."
+						/>
+						<Feature
+							title="Library"
+							description="Save, remove, check liked tracks. Manage your collection."
+						/>
+						<Feature
 							title="Search"
 							description="Find tracks, artists, and albums with flexible queries and filters."
 						/>
 						<Feature
-							title="Recommend"
-							description="Get recommendations by seeds with tunable attributes: energy, tempo, valence."
+							title="Discovery"
+							description="Artist info, top tracks, discography, recommendations by seeds."
 						/>
 						<Feature
-							title="Create"
-							description="Create playlists and add tracks in one command. Opens in Spotify."
+							title="Playlists"
+							description="Create, list, get, add tracks. Full playlist management."
 						/>
 					</div>
 				</div>
@@ -136,20 +142,20 @@ export default function Home() {
 						<code className="border border-neutral-800 bg-neutral-900 px-1.5 py-0.5 font-[family-name:var(--font-geist-mono)] text-sm text-white">
 							--json
 						</code>{" "}
-						output. Pair with Codex, Claude Code, or any agent to create
-						playlists from natural language.
+						output. Pair with any LLM or agent runtime to control Spotify
+						from natural language.
 					</p>
 					<div className="border border-neutral-800 bg-black p-5 font-[family-name:var(--font-geist-mono)] text-sm">
 						<p className="text-neutral-500">
-							&quot;Create a lo-fi playlist for studying&quot;
+							&quot;Play something chill for coding&quot;
 						</p>
 						<p className="mt-2 text-neutral-600">
-							→ AI maps mood to seeds + attributes
+							→ top artists + search + filter history
 						</p>
 						<p className="text-neutral-600">
-							→ spoti-cli search + recommend + create
+							→ spoti-cli player play + queue 3 tracks
 						</p>
-						<p className="text-cyan-300">→ Playlist on your Spotify</p>
+						<p className="text-cyan-300">→ Music playing in 1.5 seconds</p>
 					</div>
 				</div>
 
