@@ -1,42 +1,93 @@
 # spoti-cli
 
-Spotify Web API from your terminal. Search, recommend, create playlists. Built for AI agents.
+Spotify Web API from your terminal. Playback control, personalization, library management, and playlists. Built for AI agents.
 
 ## Install
 
 ```bash
-bun add -g spoti-cli
+bun add -g @crafter/spoti-cli
 ```
 
 ## Setup
 
 1. Create a Spotify app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard/create)
-2. Set redirect URI to `http://localhost:8888/callback`
-3. Authenticate:
+   - Set redirect URI to `http://127.0.0.1:8888/callback`
+   - Check **Web API**
+2. Authenticate:
 
 ```bash
 spoti-cli auth --client-id YOUR_CLIENT_ID
 ```
 
-## Usage
+For playback, library, and personalization commands:
 
 ```bash
-# Search tracks, artists, albums
+spoti-cli auth --upgrade
+```
+
+## Commands
+
+### Playback Control
+
+```bash
+spoti-cli player now --json              # What's playing
+spoti-cli player play --uri spotify:track:ID  # Play a track
+spoti-cli player pause                   # Pause
+spoti-cli player next                    # Skip
+spoti-cli player prev                    # Previous
+spoti-cli player queue spotify:track:ID  # Add to queue
+spoti-cli player devices --json          # List devices
+spoti-cli player volume 75               # Set volume
+spoti-cli player shuffle on              # Toggle shuffle
+spoti-cli player repeat track            # Set repeat mode
+```
+
+### Search & Discovery
+
+```bash
 spoti-cli search "Daft Punk" --type artist --json
 spoti-cli search "Around the World" --type track --limit 5
+spoti-cli recommend --seed-genres electronic --energy 0.8 --limit 20 --json
+```
 
-# Get recommendations from seeds
-spoti-cli recommend --seed-genres electronic,house --energy 0.8 --limit 20 --json
+### Personalization
 
-# Create a playlist
-spoti-cli create "Late Night Electronics" --tracks URI1,URI2,URI3 --public
+```bash
+spoti-cli top tracks --range short_term --limit 10 --json   # Last 4 weeks
+spoti-cli top artists --range medium_term --limit 10 --json # Last 6 months
+spoti-cli history --limit 20 --json                         # Recently played
+```
 
-# Manage playlists
+### Library
+
+```bash
+spoti-cli library list --limit 20 --json
+spoti-cli library save --tracks ID1,ID2
+spoti-cli library remove --tracks ID1,ID2
+spoti-cli library check --tracks ID1,ID2 --json
+```
+
+### Track & Artist Info
+
+```bash
+spoti-cli track get ID --json
+spoti-cli artist get ID --json
+spoti-cli artist top-tracks ID --market US --json
+spoti-cli artist albums ID --limit 10 --json
+```
+
+### Playlists
+
+```bash
+spoti-cli create "Late Night" --tracks URI1,URI2 --public --json
 spoti-cli playlist list --json
-spoti-cli playlist get PLAYLIST_ID --json
-spoti-cli playlist add PLAYLIST_ID --tracks URI1,URI2
+spoti-cli playlist get ID --json
+spoti-cli playlist add ID --tracks URI1,URI2
+```
 
-# Current user
+### Account
+
+```bash
 spoti-cli me --json
 ```
 
@@ -46,28 +97,76 @@ Fine-tune recommendations with audio features:
 
 | Flag | Range | What it controls |
 |------|-------|-----------------|
-| `--energy` | 0.0–1.0 | Intensity |
-| `--danceability` | 0.0–1.0 | Groove factor |
-| `--valence` | 0.0–1.0 | Happy ↔ sad |
+| `--energy` | 0.0-1.0 | Intensity |
+| `--danceability` | 0.0-1.0 | Groove factor |
+| `--valence` | 0.0-1.0 | Happy to sad |
 | `--tempo` | BPM | Speed |
-| `--acousticness` | 0.0–1.0 | Acoustic ↔ electronic |
-| `--instrumentalness` | 0.0–1.0 | Instrumental ↔ vocal |
-| `--popularity` | 0–100 | Mainstream factor |
+| `--acousticness` | 0.0-1.0 | Acoustic to electronic |
+| `--instrumentalness` | 0.0-1.0 | Instrumental to vocal |
+| `--popularity` | 0-100 | Mainstream factor |
+
+## Real World Use Cases
+
+### DJ Fantasma -- Voice-Controlled Spotify DJ
+
+An Obsidian plugin that turns spoti-cli into a voice-controlled DJ. Speak to control Spotify with real-time transcription (ElevenLabs Scribe) and AI-powered intent parsing.
+
+```
+"Ponme Soda Stereo" -> search -> play (1.5s)
+"Pausa"             -> pause       (0.7s)
+"Mueve a la tele"   -> transfer    (0.5s)
+```
+
+Features: animated audio-reactive orb, now playing card, real-time transcript, smart volume ducking, auto-queue.
+
+Stack: Obsidian plugin + Bun/Hono webhook server + ElevenLabs STT/TTS + Claude + spoti-cli
+
+### AI Playlist Curation
+
+Analyze listening patterns and generate playlists from natural language:
+
+```bash
+spoti-cli top artists --range short_term --json     # Taste profile
+spoti-cli history --limit 50 --json                 # Filter out recent
+spoti-cli artist top-tracks ARTIST_ID --json        # Deep cuts
+spoti-cli create "Deep Cuts" --tracks URI1,... --json
+```
+
+### Smart Auto-Queue
+
+Queue tracks based on current vibe without interrupting playback:
+
+```bash
+spoti-cli player now --json                          # Current context
+spoti-cli top artists --range short_term --json      # Taste seeds
+spoti-cli search "artist" --type track --limit 20 --json
+spoti-cli player queue spotify:track:ID              # Add to queue
+```
+
+### Multi-Device Control
+
+Move playback between devices seamlessly:
+
+```bash
+spoti-cli player devices --json
+spoti-cli player play --device DEVICE_ID
+spoti-cli player volume 30
+```
 
 ## AI Agents
 
-Every command supports `--json`. Pair with Claude, GPT, or any LLM to generate playlists from natural language.
+Every command supports `--json`. Pair with Claude, GPT, or any LLM for natural language music control.
 
-```
-"Create a lo-fi playlist for studying"
-→ AI maps mood → search seeds → recommend → create
-→ Playlist on your Spotify
+Install the Claude skill:
+
+```bash
+npx skills add crafter-station/skills --skill spoti-cli
 ```
 
 ## Stack
 
-Bun · TypeScript · Spotify Web API · OAuth2 PKCE
+Bun, TypeScript, Spotify Web API, OAuth2 PKCE
 
 ## License
 
-MIT — [Crafter Station](https://github.com/crafter-station)
+MIT -- [Crafter Station](https://github.com/crafter-station)
