@@ -4,6 +4,7 @@ import { spotify } from "../lib/spotify.js";
 interface CreateOptions {
 	description?: string;
 	public: boolean;
+	follow?: boolean;
 	tracks?: string;
 	open: boolean;
 	json: boolean;
@@ -34,6 +35,13 @@ export async function createCommand(name: string, opts: CreateOptions) {
 			}),
 		},
 	);
+
+	if (opts.follow !== false) {
+		await spotify(`/playlists/${playlist.id}/followers`, {
+			method: "PUT",
+			body: JSON.stringify({ public: opts.public }),
+		});
+	}
 
 	if (opts.tracks) {
 		const uris = opts.tracks

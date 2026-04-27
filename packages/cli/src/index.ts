@@ -42,7 +42,7 @@ const program = new Command();
 program
 	.name("spoti-cli")
 	.description("Spotify Web API from your terminal")
-	.version("0.4.0");
+	.version("0.5.0");
 
 program
 	.command("auth")
@@ -53,8 +53,8 @@ program
 
 program
 	.command("search <query>")
-	.description("Search for tracks, artists, or albums")
-	.option("-t, --type <type>", "Search type: track, artist, album", "track")
+	.description("Search for tracks, artists, albums, or playlists")
+	.option("-t, --type <type>", "Search type: track, artist, album, playlist", "track")
 	.option("-l, --limit <n>", "Number of results", "10")
 	.option("--json", "Output as JSON", false)
 	.action((query, opts) => searchCommand(query, opts));
@@ -81,6 +81,7 @@ program
 	.description("Create a new playlist")
 	.option("-d, --description <text>", "Playlist description")
 	.option("--public", "Make playlist public", false)
+	.option("--no-follow", "Do not follow the created playlist")
 	.option("--tracks <uris>", "Comma-separated track URIs or IDs to add")
 	.option("-o, --open", "Open playlist in Spotify app after creation", false)
 	.option("--json", "Output as JSON", false)
@@ -262,7 +263,9 @@ const playlist = program.command("playlist").description("Manage playlists");
 playlist
 	.command("list")
 	.description("List your playlists")
-	.option("-l, --limit <n>", "Number of playlists", "20")
+	.option("-l, --limit <n>", "Number of playlists (max 500)", "20")
+	.option("--filter <regex>", "Filter playlists by name")
+	.option("--mine", "Only show playlists owned by the authenticated user", false)
 	.option("--json", "Output as JSON", false)
 	.action((opts) => playlistListCommand(opts));
 
