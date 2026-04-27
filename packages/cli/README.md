@@ -21,18 +21,23 @@ spoti-cli auth --client-id YOUR_CLIENT_ID
 ## Usage
 
 ```bash
-# Search tracks, artists, albums
+# Search tracks, artists, albums, playlists
 spoti-cli search "Daft Punk" --type artist --json
 spoti-cli search "Around the World" --type track --limit 5
+spoti-cli search "lofi study" --type playlist
+
+# Search types: track, artist, album, playlist
 
 # Get recommendations from seeds
 spoti-cli recommend --seed-genres electronic,house --energy 0.8 --limit 20 --json
 
-# Create a playlist
+# Create a playlist and follow it so it appears in playlist list
 spoti-cli create "Late Night Electronics" --tracks URI1,URI2,URI3 --public
+spoti-cli create "Scratchpad" --no-follow
 
 # Manage playlists
 spoti-cli playlist list --json
+spoti-cli playlist list --mine --filter "rock" --limit 100
 spoti-cli playlist get PLAYLIST_ID --json
 spoti-cli playlist add PLAYLIST_ID --tracks URI1,URI2
 

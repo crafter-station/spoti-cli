@@ -263,7 +263,9 @@ const playlist = program.command("playlist").description("Manage playlists");
 playlist
 	.command("list")
 	.description("List your playlists")
-	.option("-l, --limit <n>", "Number of playlists", "20")
+	.option("-l, --limit <n>", "Number of playlists (max 500)", "20")
+	.option("--filter <regex>", "Filter playlists by name")
+	.option("--mine", "Only show playlists owned by the authenticated user", false)
 	.option("--json", "Output as JSON", false)
 	.action((opts) => playlistListCommand(opts));
 
