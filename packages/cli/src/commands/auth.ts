@@ -39,13 +39,35 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
 		.replace(/\//g, "_");
 }
 
+function printOnboarding() {
+	const bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
+	const green = (s: string) => `\x1b[32m${s}\x1b[0m`;
+	const cyan = (s: string) => `\x1b[36m${s}\x1b[0m`;
+	const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
+	console.error("");
+	console.error(bold("Set up your Spotify app (60 seconds):"));
+	console.error("");
+	console.error(`  ${dim("1.")} Open ${cyan("https://developer.spotify.com/dashboard/create")}`);
+	console.error(`  ${dim("2.")} Fill the form with these exact values:`);
+	console.error("");
+	console.error(`     ${dim("App name")}         ${green("spoti-cli")}            ${dim("(or anything)")}`);
+	console.error(`     ${dim("App description")}  ${green("CLI access")}           ${dim("(or anything)")}`);
+	console.error(`     ${dim("Redirect URI")}     ${green(REDIRECT_URI)}`);
+	console.error(`     ${dim("APIs used")}        ${green("Web API")}              ${dim("(checkbox)")}`);
+	console.error("");
+	console.error(`  ${dim("3.")} Save → click ${bold("Settings")} → copy ${bold("Client ID")}`);
+	console.error(`  ${dim("4.")} Run: ${green("spoti-cli auth --client-id <CLIENT_ID>")}`);
+	console.error("");
+	console.error(dim("Note: Spotify rejects 'localhost'. Use 127.0.0.1 verbatim."));
+	console.error("");
+}
+
 export async function authCommand(clientId?: string, upgrade = false) {
 	const config = readConfig();
 	const id = clientId ?? config.client_id;
 
 	if (!id) {
-		console.error("Client ID required. Run: spoti-cli auth --client-id <ID>");
-		console.error("Get one at: https://developer.spotify.com/dashboard/create");
+		printOnboarding();
 		process.exit(1);
 	}
 
