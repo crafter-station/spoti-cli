@@ -53,8 +53,8 @@ program
 
 program
 	.command("search <query>")
-	.description("Search for tracks, artists, or albums")
-	.option("-t, --type <type>", "Search type: track, artist, album", "track")
+	.description("Search for tracks, artists, albums, or playlists")
+	.option("-t, --type <type>", "Search type: track, artist, album, playlist", "track")
 	.option("-l, --limit <n>", "Number of results", "10")
 	.option("--json", "Output as JSON", false)
 	.action((query, opts) => searchCommand(query, opts));

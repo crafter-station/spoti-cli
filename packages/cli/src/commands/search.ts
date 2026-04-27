@@ -36,10 +36,20 @@ interface SpotifyAlbum {
 	release_date: string;
 }
 
+interface SpotifyPlaylist {
+	id: string;
+	name: string;
+	owner: { display_name?: string; id: string };
+	tracks: { total: number };
+	external_urls: { spotify: string };
+	public: boolean;
+}
+
 type SearchResult = {
 	tracks?: { items: SpotifyTrack[] };
 	artists?: { items: SpotifyArtistFull[] };
 	albums?: { items: SpotifyAlbum[] };
+	playlists?: { items: SpotifyPlaylist[] };
 };
 
 export async function searchCommand(query: string, opts: SearchOptions) {
@@ -75,6 +85,14 @@ export async function searchCommand(query: string, opts: SearchOptions) {
 			artist: a.artists.map((ar) => ar.name).join(", "),
 			released: a.release_date,
 			uri: a.uri,
+		}));
+		output(items, opts.json);
+	} else if (type === "playlist" && data.playlists) {
+		const items = data.playlists.items.map((p) => ({
+			name: p.name,
+			owner: p.owner.display_name ?? p.owner.id,
+			tracks: p.tracks.total,
+			url: p.external_urls.spotify,
 		}));
 		output(items, opts.json);
 	}
