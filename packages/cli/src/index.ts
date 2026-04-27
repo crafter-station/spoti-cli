@@ -42,13 +42,13 @@ const program = new Command();
 program
 	.name("spoti-cli")
 	.description("Spotify Web API from your terminal")
-	.version("0.3.0");
+	.version("0.4.0");
 
 program
 	.command("auth")
-	.description("Authenticate with Spotify (OAuth2 PKCE)")
+	.description("Authenticate with Spotify (OAuth2 PKCE) — grants all scopes")
 	.option("-c, --client-id <id>", "Spotify app client ID")
-	.option("-u, --upgrade", "Re-authenticate with expanded permissions", false)
+	.option("-u, --upgrade", "Deprecated alias — auth already grants all scopes", false)
 	.action((opts) => authCommand(opts.clientId, opts.upgrade));
 
 program

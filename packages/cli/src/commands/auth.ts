@@ -1,15 +1,13 @@
 import { REDIRECT_URI, startAuthServer } from "../lib/auth-server.js";
 import { readConfig, updateConfig } from "../lib/config.js";
 
-const BASE_SCOPES = [
+const SCOPES = [
 	"playlist-modify-private",
 	"playlist-modify-public",
+	"playlist-read-private",
+	"playlist-read-collaborative",
 	"user-read-private",
 	"user-read-email",
-];
-
-const FULL_SCOPES = [
-	...BASE_SCOPES,
 	"user-read-playback-state",
 	"user-modify-playback-state",
 	"user-read-currently-playing",
@@ -62,7 +60,7 @@ function printOnboarding() {
 	console.error("");
 }
 
-export async function authCommand(clientId?: string, upgrade = false) {
+export async function authCommand(clientId?: string, _upgrade = false) {
 	const config = readConfig();
 	const id = clientId ?? config.client_id;
 
@@ -79,9 +77,7 @@ export async function authCommand(clientId?: string, upgrade = false) {
 	const authUrl = new URL("https://accounts.spotify.com/authorize");
 	authUrl.searchParams.set("response_type", "code");
 	authUrl.searchParams.set("client_id", id);
-	const scopes = upgrade
-		? [...new Set([...(config.scopes ?? BASE_SCOPES), ...FULL_SCOPES])]
-		: FULL_SCOPES;
+	const scopes = SCOPES;
 	authUrl.searchParams.set("scope", scopes.join(" "));
 	authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
 	authUrl.searchParams.set("code_challenge_method", "S256");
@@ -128,8 +124,19 @@ export async function authCommand(clientId?: string, upgrade = false) {
 		scopes,
 	});
 
-	console.log("Authenticated successfully!");
+	const green = (s: string) => `\x1b[32m${s}\x1b[0m`;
+	const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
+	const bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
+
 	console.log("");
-	console.log("Install the Claude skill for AI-powered playlists:");
-	console.log("  npx skills add crafter-station/skills --skill spoti-cli");
+	console.log(green("✓ Authenticated successfully"));
+	console.log(dim(`  Granted scopes: ${scopes.length}`));
+	console.log("");
+	console.log(bold("First 403 error? Two common causes:"));
+	console.log(`  ${dim("1.")} ${green("Insufficient client scope")} → run ${bold("spoti-cli auth --upgrade")}`);
+	console.log(`  ${dim("2.")} ${green("Forbidden (dev mode)")} → add yourself as a test user in the dashboard:`);
+	console.log(`     ${dim("https://developer.spotify.com/dashboard → your app → Settings → User Management")}`);
+	console.log("");
+	console.log(dim("Install the Claude skill for AI-powered playlists:"));
+	console.log(dim("  npx skills add crafter-station/skills --skill spoti-cli"));
 }
