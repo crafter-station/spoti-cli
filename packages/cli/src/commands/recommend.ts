@@ -13,9 +13,9 @@ interface SpotifyTrack {
 	id: string;
 	name: string;
 	uri: string;
-	artists: { name: string }[];
-	album: { name: string };
-	popularity: number;
+	artists?: { name?: string }[];
+	album?: { name?: string };
+	popularity?: number;
 }
 
 interface SpotifyArtist {
@@ -51,7 +51,8 @@ export async function recommendCommand(opts: RecommendOptions) {
 			const track = await spotify<SpotifyTrack>(
 				`/tracks/${trackId.trim()}`,
 			);
-			queries.push(`artist:${track.artists[0].name}`);
+			const seedArtist = track.artists?.[0]?.name;
+			if (seedArtist) queries.push(`artist:${seedArtist}`);
 		}
 	}
 
@@ -66,7 +67,7 @@ export async function recommendCommand(opts: RecommendOptions) {
 	const params = new URLSearchParams({
 		q: query,
 		type: "track",
-		limit: String(Math.min(limit, 50)),
+		limit: String(Math.min(limit, 10)),
 	});
 
 	const data = await spotify<SearchResult>(`/search?${params}`);
@@ -79,10 +80,10 @@ export async function recommendCommand(opts: RecommendOptions) {
 	const items = data.tracks.items.map((t) => ({
 		id: t.id,
 		name: t.name,
-		artist: t.artists.map((a) => a.name).join(", "),
-		album: t.album.name,
+		artist: (t.artists ?? []).map((a) => a.name ?? "").filter(Boolean).join(", "),
+		album: t.album?.name ?? "",
 		uri: t.uri,
-		popularity: t.popularity,
+		popularity: t.popularity ?? null,
 	}));
 
 	output(items, opts.json);
