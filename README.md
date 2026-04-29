@@ -2,6 +2,8 @@
 
 Spotify Web API from your terminal. Playback control, personalization, library management, and playlists. Built for AI agents.
 
+> **v0.6.0** — Migrated to the Feb 2026 Spotify API surface (`/me/playlists`, `/playlists/{id}/items`, `/me/library`). Apps created after 2026-02-11 require this version. Older versions return `403 Forbidden` on every write call.
+
 ## Install
 
 ```bash
@@ -11,8 +13,9 @@ bun add -g @crafter/spoti-cli
 ## Setup
 
 1. Create a Spotify app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard/create)
-   - Set redirect URI to `http://127.0.0.1:8888/callback`
+   - Set redirect URI to `http://127.0.0.1:8888/callback` — copy this **literally**. Spotify rejects `localhost`, `https://`, trailing slashes, and missing `/callback`.
    - Check **Web API**
+   - Apps created after 2026-02-11 require **Spotify Premium** for the owner and are limited to 5 authorized users. The owner is allowlisted automatically.
 2. Authenticate:
 
 ```bash

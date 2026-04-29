@@ -32,10 +32,22 @@ interface SavedTrackItem {
 	};
 }
 
+function toUri(input: string): string {
+	const trimmed = input.trim();
+	return trimmed.startsWith("spotify:") ? trimmed : `spotify:track:${trimmed}`;
+}
+
+function uriToId(uri: string): string {
+	const parts = uri.split(":");
+	return parts[parts.length - 1] ?? uri;
+}
+
 export async function libraryListCommand(opts: LibraryListOptions) {
 	requireScopes(LIBRARY_READ_SCOPES);
 	const limit = opts.limit || "20";
 	const offset = opts.offset || "0";
+	// /me/tracks still works for read; /me/library doesn't expose a list
+	// endpoint as of Feb 2026. Falls back transparently.
 	const data = await spotify<{ items: SavedTrackItem[]; total: number }>(
 		`/me/tracks?limit=${limit}&offset=${offset}`,
 	);
@@ -54,31 +66,29 @@ export async function libraryListCommand(opts: LibraryListOptions) {
 
 export async function librarySaveCommand(opts: LibraryModifyOptions) {
 	requireScopes(LIBRARY_WRITE_SCOPES);
-	const ids = opts.tracks.split(",").map((t) => t.trim().replace("spotify:track:", ""));
-	await spotify("/me/tracks", {
-		method: "PUT",
-		body: JSON.stringify({ ids }),
-	});
-	console.log(`Saved ${ids.length} track(s) to library`);
+	const uris = opts.tracks.split(",").map(toUri);
+	const query = uris.map(encodeURIComponent).join(",");
+	await spotify(`/me/library?uris=${query}`, { method: "PUT" });
+	console.log(`Saved ${uris.length} track(s) to library`);
 }
 
 export async function libraryRemoveCommand(opts: LibraryModifyOptions) {
 	requireScopes(LIBRARY_WRITE_SCOPES);
-	const ids = opts.tracks.split(",").map((t) => t.trim().replace("spotify:track:", ""));
-	await spotify("/me/tracks", {
-		method: "DELETE",
-		body: JSON.stringify({ ids }),
-	});
-	console.log(`Removed ${ids.length} track(s) from library`);
+	const uris = opts.tracks.split(",").map(toUri);
+	const query = uris.map(encodeURIComponent).join(",");
+	await spotify(`/me/library?uris=${query}`, { method: "DELETE" });
+	console.log(`Removed ${uris.length} track(s) from library`);
 }
 
 export async function libraryCheckCommand(opts: LibraryCheckOptions) {
 	requireScopes(LIBRARY_READ_SCOPES);
-	const ids = opts.tracks.split(",").map((t) => t.trim().replace("spotify:track:", ""));
-	const data = await spotify<boolean[]>(`/me/tracks/contains?ids=${ids.join(",")}`);
+	const uris = opts.tracks.split(",").map(toUri);
+	const query = uris.map(encodeURIComponent).join(",");
+	const data = await spotify<boolean[]>(`/me/library/contains?uris=${query}`);
 
-	const items = ids.map((id, i) => ({
-		id,
+	const items = uris.map((uri, i) => ({
+		id: uriToId(uri),
+		uri,
 		saved: data[i],
 	}));
 

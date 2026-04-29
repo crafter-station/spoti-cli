@@ -41,6 +41,7 @@ function printOnboarding() {
 	const bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
 	const green = (s: string) => `\x1b[32m${s}\x1b[0m`;
 	const cyan = (s: string) => `\x1b[36m${s}\x1b[0m`;
+	const yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
 	const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
 	console.error("");
 	console.error(bold("Set up your Spotify app (60 seconds):"));
@@ -50,13 +51,20 @@ function printOnboarding() {
 	console.error("");
 	console.error(`     ${dim("App name")}         ${green("spoti-cli")}            ${dim("(or anything)")}`);
 	console.error(`     ${dim("App description")}  ${green("CLI access")}           ${dim("(or anything)")}`);
-	console.error(`     ${dim("Redirect URI")}     ${green(REDIRECT_URI)}`);
+	console.error(`     ${dim("Redirect URI")}     ${green(REDIRECT_URI)}  ${yellow("← copy this exactly")}`);
 	console.error(`     ${dim("APIs used")}        ${green("Web API")}              ${dim("(checkbox)")}`);
 	console.error("");
 	console.error(`  ${dim("3.")} Save → click ${bold("Settings")} → copy ${bold("Client ID")}`);
 	console.error(`  ${dim("4.")} Run: ${green("spoti-cli auth --client-id <CLIENT_ID>")}`);
 	console.error("");
-	console.error(dim("Note: Spotify rejects 'localhost'. Use 127.0.0.1 verbatim."));
+	console.error(yellow("Common mistakes that cause 403 errors later:"));
+	console.error(`  ${dim("•")} Using ${bold("localhost")} instead of ${bold("127.0.0.1")} — Spotify rejects it.`);
+	console.error(`  ${dim("•")} Using ${bold("https://")} — must be ${bold("http://")}.`);
+	console.error(`  ${dim("•")} Trailing slash or missing ${bold("/callback")}.`);
+	console.error(`  ${dim("•")} Spaces around the URI when pasting.`);
+	console.error("");
+	console.error(dim("Apps created after 2026-02-11 require Premium and are limited to 5"));
+	console.error(dim("authorized users. The owner is allowlisted automatically."));
 	console.error("");
 }
 
