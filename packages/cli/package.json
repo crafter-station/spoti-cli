@@ -1,6 +1,6 @@
 {
 	"name": "@crafter/spoti-cli",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"description": "Spotify Web API from your terminal. Search, playback, library, audio features, and playlists.",
 	"type": "module",
 	"main": "dist/index.js",

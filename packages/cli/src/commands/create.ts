@@ -10,10 +10,6 @@ interface CreateOptions {
 	json: boolean;
 }
 
-interface SpotifyUser {
-	id: string;
-}
-
 interface SpotifyPlaylist {
 	id: string;
 	name: string;
@@ -22,19 +18,14 @@ interface SpotifyPlaylist {
 }
 
 export async function createCommand(name: string, opts: CreateOptions) {
-	const user = await spotify<SpotifyUser>("/me");
-
-	const playlist = await spotify<SpotifyPlaylist>(
-		`/users/${user.id}/playlists`,
-		{
-			method: "POST",
-			body: JSON.stringify({
-				name,
-				description: opts.description ?? "",
-				public: opts.public,
-			}),
-		},
-	);
+	const playlist = await spotify<SpotifyPlaylist>("/me/playlists", {
+		method: "POST",
+		body: JSON.stringify({
+			name,
+			description: opts.description ?? "",
+			public: opts.public,
+		}),
+	});
 
 	if (opts.follow !== false) {
 		await spotify(`/playlists/${playlist.id}/followers`, {
@@ -48,7 +39,7 @@ export async function createCommand(name: string, opts: CreateOptions) {
 			.split(",")
 			.map((t) => (t.startsWith("spotify:") ? t : `spotify:track:${t}`));
 
-		await spotify(`/playlists/${playlist.id}/tracks`, {
+		await spotify(`/playlists/${playlist.id}/items`, {
 			method: "POST",
 			body: JSON.stringify({ uris }),
 		});

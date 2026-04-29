@@ -13,7 +13,8 @@ interface SpotifyPlaylistItem {
 	name: string;
 	description: string;
 	owner: { id: string; display_name?: string };
-	tracks: { total: number };
+	items?: { total: number };
+	tracks?: { total: number };
 	external_urls: { spotify: string };
 	public: boolean;
 }
@@ -31,12 +32,18 @@ interface PlaylistGetOptions {
 	json: boolean;
 }
 
-interface SpotifyTrackItem {
-	track: {
+interface SpotifyPlaylistInnerItem {
+	item?: {
 		id: string;
 		name: string;
 		uri: string;
-		artists: { name: string }[];
+		artists?: { name: string }[];
+	};
+	track?: {
+		id: string;
+		name: string;
+		uri: string;
+		artists?: { name: string }[];
 	};
 }
 
@@ -88,7 +95,7 @@ export async function playlistListCommand(opts: PlaylistListOptions) {
 	const result = items.map((p) => ({
 		id: p.id,
 		name: p.name,
-		tracks: p.tracks.total,
+		tracks: p.items?.total ?? p.tracks?.total ?? 0,
 		public: p.public,
 		url: p.external_urls.spotify,
 	}));
@@ -101,21 +108,27 @@ export async function playlistGetCommand(id: string, opts: PlaylistGetOptions) {
 		id: string;
 		name: string;
 		description: string;
-		tracks: { items: SpotifyTrackItem[] };
+		items?: { items: SpotifyPlaylistInnerItem[] };
+		tracks?: { items: SpotifyPlaylistInnerItem[] };
 		external_urls: { spotify: string };
 	}>(`/playlists/${id}`);
+
+	const inner = data.items?.items ?? data.tracks?.items ?? [];
 
 	const result = {
 		id: data.id,
 		name: data.name,
 		description: data.description,
 		url: data.external_urls.spotify,
-		tracks: data.tracks.items.map((i) => ({
-			id: i.track.id,
-			name: i.track.name,
-			artist: i.track.artists.map((a) => a.name).join(", "),
-			uri: i.track.uri,
-		})),
+		tracks: inner
+			.map((i) => i.item ?? i.track)
+			.filter((t): t is NonNullable<typeof t> => Boolean(t))
+			.map((t) => ({
+				id: t.id,
+				name: t.name,
+				artist: t.artists?.map((a) => a.name).join(", ") ?? "",
+				uri: t.uri,
+			})),
 	};
 
 	output(result, opts.json);
@@ -126,7 +139,7 @@ export async function playlistAddCommand(id: string, opts: PlaylistAddOptions) {
 		.split(",")
 		.map((t) => (t.startsWith("spotify:") ? t : `spotify:track:${t}`));
 
-	await spotify(`/playlists/${id}/tracks`, {
+	await spotify(`/playlists/${id}/items`, {
 		method: "POST",
 		body: JSON.stringify({ uris }),
 	});

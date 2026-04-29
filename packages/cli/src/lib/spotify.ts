@@ -3,7 +3,7 @@ import { readConfig, updateConfig } from "./config.js";
 const BASE_URL = "https://api.spotify.com/v1";
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 
-function explainError(status: number, body: string): string {
+function explainError(status: number, body: string, path?: string): string {
 	let message = body;
 	try {
 		const parsed = JSON.parse(body);
@@ -24,12 +24,34 @@ function explainError(status: number, body: string): string {
 		return [
 			`Spotify API error 403: ${message || "Forbidden"}.`,
 			"",
-			"This usually means your Spotify app is in Development Mode and your",
-			"account isn't added as a test user. Fix:",
-			"  1. Open https://developer.spotify.com/dashboard",
-			"  2. Click your app → Settings → User Management",
-			"  3. Add your name + Spotify account email",
-			"  4. Save and retry the command (no re-auth needed)",
+			"Three common causes — check in this order:",
+			"",
+			"  1. Endpoint may be deprecated (Spotify removed many on 2026-02-11).",
+			"     If you see this on a CLI you just installed, run: npm i -g @crafter/spoti-cli",
+			"     to make sure you're on the latest version.",
+			"",
+			"  2. Development Mode app + your account isn't allowlisted.",
+			"     Open https://developer.spotify.com/dashboard → your app →",
+			"     Settings → User Management → add your Spotify account email.",
+			"     (You're allowlisted automatically if you're the app owner.)",
+			"",
+			"  3. Redirect URI mismatch when you set up the app.",
+			"     It must be EXACTLY http://127.0.0.1:8888/callback",
+			"     (not localhost, not https, not a trailing slash).",
+			"     If wrong, fix it in the dashboard, delete ~/.spoti-cli/config.json,",
+			"     and re-run: spoti-cli auth --client-id <ID>",
+			"",
+			"Migration notes: https://developer.spotify.com/documentation/web-api/references/changes/february-2026",
+		].join("\n");
+	}
+
+	if (status === 404) {
+		return [
+			`Spotify API error 404: ${message || "Not found"}.`,
+			"",
+			"The endpoint or resource doesn't exist. If this is a write command,",
+			"the endpoint may have been removed in the Feb 2026 API update.",
+			"Update the CLI: npm i -g @crafter/spoti-cli",
 		].join("\n");
 	}
 
@@ -45,7 +67,8 @@ function explainError(status: number, body: string): string {
 		return `Spotify API error 429: Rate limited. Wait a moment and retry.`;
 	}
 
-	return `Spotify API error ${status}: ${message}`;
+	const where = path ? ` (${path})` : "";
+	return `Spotify API error ${status}${where}: ${message}`;
 }
 
 async function refreshAccessToken(): Promise<string> {
@@ -120,7 +143,7 @@ export async function spotify<T>(
 		});
 		if (!retry.ok) {
 			const body = await retry.text();
-			throw new Error(explainError(retry.status, body));
+			throw new Error(explainError(retry.status, body, path));
 		}
 		if (retry.status === 204) return {} as T;
 		const retryText = await retry.text();
@@ -134,7 +157,7 @@ export async function spotify<T>(
 
 	if (!res.ok) {
 		const body = await res.text();
-		throw new Error(explainError(res.status, body));
+		throw new Error(explainError(res.status, body, path));
 	}
 
 	if (res.status === 204) return {} as T;
