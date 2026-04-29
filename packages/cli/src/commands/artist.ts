@@ -19,9 +19,9 @@ interface SpotifyArtist {
 	id: string;
 	name: string;
 	uri: string;
-	genres: string[];
-	popularity: number;
-	followers: { total: number };
+	genres?: string[];
+	popularity?: number;
+	followers?: { total: number };
 	external_urls: { spotify: string };
 }
 
@@ -29,9 +29,9 @@ interface SpotifyTrack {
 	id: string;
 	name: string;
 	uri: string;
-	artists: { name: string }[];
-	album: { name: string };
-	popularity: number;
+	artists?: { id?: string; name?: string }[];
+	album?: { name?: string };
+	popularity?: number;
 }
 
 interface SpotifyAlbum {
@@ -49,9 +49,9 @@ export async function artistGetCommand(id: string, opts: ArtistOptions) {
 	const result = {
 		id: data.id,
 		name: data.name,
-		genres: data.genres.join(", "),
-		popularity: data.popularity,
-		followers: data.followers.total,
+		genres: (data.genres ?? []).join(", "),
+		popularity: data.popularity ?? null,
+		followers: data.followers?.total ?? null,
 		uri: data.uri,
 		url: data.external_urls.spotify,
 	};
@@ -59,18 +59,49 @@ export async function artistGetCommand(id: string, opts: ArtistOptions) {
 	output(result, opts.json);
 }
 
+async function topTracksFallbackViaSearch(
+	artistId: string,
+	market: string,
+): Promise<SpotifyTrack[]> {
+	const artist = await spotify<{ name: string }>(`/artists/${artistId}`);
+	const params = new URLSearchParams({
+		q: artist.name,
+		type: "track",
+		limit: "10",
+		market,
+	});
+	const search = await spotify<{ tracks?: { items: SpotifyTrack[] } }>(
+		`/search?${params}`,
+	);
+	return (search.tracks?.items ?? []).filter(
+		(t) => t.artists?.some((a) => a.id === artistId),
+	);
+}
+
 export async function artistTopTracksCommand(id: string, opts: ArtistTopTracksOptions) {
 	const market = opts.market || "US";
-	const data = await spotify<{ tracks: SpotifyTrack[] }>(
-		`/artists/${id}/top-tracks?market=${market}`,
-	);
 
-	const items = data.tracks.map((t) => ({
+	let tracks: SpotifyTrack[];
+	try {
+		const data = await spotify<{ tracks: SpotifyTrack[] }>(
+			`/artists/${id}/top-tracks?market=${market}`,
+		);
+		tracks = data.tracks;
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : String(err);
+		if (msg.includes("403") || msg.includes("404")) {
+			tracks = await topTracksFallbackViaSearch(id, market);
+		} else {
+			throw err;
+		}
+	}
+
+	const items = tracks.map((t) => ({
 		id: t.id,
 		name: t.name,
-		artist: t.artists.map((a) => a.name).join(", "),
-		album: t.album.name,
-		popularity: t.popularity,
+		artist: (t.artists ?? []).map((a) => a.name ?? "").filter(Boolean).join(", "),
+		album: t.album?.name ?? "",
+		popularity: t.popularity ?? null,
 		uri: t.uri,
 	}));
 
@@ -112,9 +143,9 @@ export async function artistRelatedCommand(id: string, opts: ArtistOptions) {
 	const items = data.artists.map((a) => ({
 		id: a.id,
 		name: a.name,
-		genres: a.genres.join(", "),
-		popularity: a.popularity,
-		followers: a.followers.total,
+		genres: (a.genres ?? []).join(", "),
+		popularity: a.popularity ?? null,
+		followers: a.followers?.total ?? null,
 		uri: a.uri,
 	}));
 
