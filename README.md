@@ -156,11 +156,13 @@ spoti-cli player volume 30
 
 Every command supports `--json`. Pair with Claude, GPT, or any LLM for natural language music control.
 
-Install the Claude skill:
+Install the [`spoti-cli` skill](skills/spoti-cli/SKILL.md) so your agent knows the commands, the mood vocabulary, and the vault-aware playlist flow:
 
 ```bash
-npx skills add crafter-station/skills --skill spoti-cli
+npx skills add crafter-station/spoti-cli
 ```
+
+Works with Claude Code, Cursor, Copilot, and [10+ more agents](https://github.com/vercel-labs/add-skill#available-agents).
 
 ## Stack
 
