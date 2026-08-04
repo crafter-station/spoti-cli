@@ -42,7 +42,7 @@ const program = new Command();
 program
 	.name("spoti-cli")
 	.description("Spotify Web API from your terminal")
-	.version("0.5.0");
+	.version("0.6.3");
 
 program
 	.command("auth")

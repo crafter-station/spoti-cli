@@ -4,14 +4,26 @@ Spotify Web API from your terminal. Search, recommend, create playlists. Built f
 
 ## Install
 
+Run it directly, no install:
+
 ```bash
-bun add -g spoti-cli
+bunx @crafter/spoti-cli --help
+npx @crafter/spoti-cli --help
 ```
+
+Or install globally:
+
+```bash
+bun add -g @crafter/spoti-cli
+npm install -g @crafter/spoti-cli
+```
+
+Both give you the `spoti-cli` binary.
 
 ## Setup
 
 1. Create a Spotify app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard/create)
-2. Set redirect URI to `http://localhost:8888/callback`
+2. Set redirect URI to `http://127.0.0.1:8888/callback` (copy it literally, Spotify rejects `localhost`, `https://`, and trailing slashes)
 3. Authenticate:
 
 ```bash

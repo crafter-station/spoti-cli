@@ -1,0 +1,12 @@
+{
+  "projectTitle": "spoti-cli",
+  "description": "Spotify Web API from your terminal: search, recommendations, playlists, playback control, library, and listening history, with --json output on every read command for AI agents.",
+  "folders": [],
+  "excludeFolders": ["node_modules", "dist", ".next"],
+  "rules": [
+    "Install as @crafter/spoti-cli, not spoti-cli; the binary is still spoti-cli",
+    "Authenticate first with spoti-cli auth --client-id <id>; the Spotify app redirect URI must be exactly http://127.0.0.1:8888/callback",
+    "Pass --json when output will be parsed by a program or agent",
+    "403 errors usually mean the user is not in the Spotify app's User Management allowlist"
+  ]
+}

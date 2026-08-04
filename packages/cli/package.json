@@ -1,6 +1,6 @@
 {
   "name": "@crafter/spoti-cli",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Spotify Web API from your terminal. Search, playback, library, audio features, and playlists.",
   "type": "module",
   "main": "dist/index.js",
@@ -23,8 +23,11 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md"
   ],
+  "homepage": "https://spoti-cli.crafter.run",
   "keywords": [
     "spotify",
     "cli",
